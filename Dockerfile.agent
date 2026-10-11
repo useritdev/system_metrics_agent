@@ -1,0 +1,32 @@
+FROM python:3.12.7-slim AS builder
+
+WORKDIR /code
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+FROM python:3.12.7-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends procps \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /code
+
+COPY --from=builder /install /usr/local
+
+COPY app ./app
+
+RUN useradd --create-home appuser
+
+ENV METRICS_ENDPOINT=http://api:8000/metrics \
+    COLLECTION_INTERVAL=5 \
+    REQUEST_TIMEOUT=3
+
+USER appuser
+
+CMD ["python", "-m", "app.agent"]
