@@ -1,1 +1,17 @@
+.venv/
 .env
+.git/
+.gitignore
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+.coverage
+coverage.xml
+app/tests/
+.github/
+Dockerfile*
+docker-compose*.yml
+sonar-project.properties
+README.md
+.vscode/
+.idea/
