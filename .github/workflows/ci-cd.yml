@@ -28,3 +28,12 @@ jobs:
 
       - name: Tests avec couverture
         run: pytest -q --cov=app --cov-report=xml
+
+      - name: Analyse SonarCloud et Quality Gate
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
